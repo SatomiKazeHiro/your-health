@@ -49,8 +49,9 @@ describe('useTimer 失焦补偿', () => {
     vi.advanceTimersByTime(2000)
     const before = store.remainingSeconds
 
-    // 模拟失焦 30 秒(节流期间 setInterval 被合并)
-    vi.advanceTimersByTime(30000)
+    // 模拟失焦 30 秒:系统时钟前进,但 setInterval 回调被节流(不触发)
+    // 真实浏览器后台 tab 会合并 interval,这里用 setSystemTime 模拟
+    vi.setSystemTime(Date.now() + 30000)
 
     // 模拟焦点回来,触发 visibilitychange
     Object.defineProperty(document, 'hidden', { configurable: true, get: () => false })

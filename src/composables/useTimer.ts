@@ -1,4 +1,4 @@
-import { onUnmounted } from 'vue'
+import { onUnmounted, getCurrentInstance } from 'vue'
 import { useTimerStore } from '@/stores/timerStore'
 
 export function useTimer() {
@@ -51,10 +51,14 @@ export function useTimer() {
   }
 
   document.addEventListener('visibilitychange', onVisibilityChange)
-  onUnmounted(() => {
-    document.removeEventListener('visibilitychange', onVisibilityChange)
-    if (intervalId !== null) window.clearInterval(intervalId)
-  })
+
+  // Only register cleanup if called inside a component setup
+  if (getCurrentInstance()) {
+    onUnmounted(() => {
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      if (intervalId !== null) window.clearInterval(intervalId)
+    })
+  }
 
   return { start, pause, resume, end }
 }
