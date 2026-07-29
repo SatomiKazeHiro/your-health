@@ -79,7 +79,7 @@ const version = 'v0.1.0'
       <span class="title">{{ zhCN.settings.title }}</span>
     </header>
 
-    <section class="group-label">{{ zhCN.settings.duration }}</section>
+    <section class="eyebrow">{{ zhCN.settings.duration }}</section>
     <div class="row">
       <span>{{ zhCN.settings.duration }}</span>
       <select :value="duration" @change="onDurationChange">
@@ -89,7 +89,7 @@ const version = 'v0.1.0'
       </select>
     </div>
 
-    <section class="group-label">{{ zhCN.settings.sound }}</section>
+    <section class="eyebrow">{{ zhCN.settings.sound }}</section>
     <div class="row">
       <span>{{ zhCN.settings.sound }}</span>
       <select :value="sound" @change="onSoundChange">
@@ -113,7 +113,7 @@ const version = 'v0.1.0'
       />
     </div>
 
-    <section class="group-label">{{ zhCN.settings.preview }}</section>
+    <section class="eyebrow">{{ zhCN.settings.preview }}</section>
     <div class="row center">
       <PillButton variant="primary" @click="previewSound">
         {{ zhCN.settings.playPreview }}
@@ -165,9 +165,19 @@ header {
   background: rgba(240, 253, 244, 0.5);
 }
 
+.eyebrow {
+  padding: 14px 22px 6px;
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  background: transparent;
+}
+
 .row {
   background: white;
-  padding: 16px 20px;
+  padding: 16px 22px;
   display: flex;
   justify-content: space-between;
   align-items: center;

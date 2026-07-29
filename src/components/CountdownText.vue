@@ -6,12 +6,12 @@ const props = withDefaults(
     seconds: number
     size?: number
     color?: string
-    fontFamily?: 'mono' | 'sans'
+    font?: 'serif' | 'mono' | 'sans'
   }>(),
   {
     size: 38,
     color: '#14532d',
-    fontFamily: 'mono',
+    font: 'mono',
   }
 )
 
@@ -24,12 +24,16 @@ const formatted = computed(() => {
 
 <template>
   <time
+    :datetime="`PT${seconds}S`"
     :aria-label="`${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒`"
     :style="{
       fontSize: `${size}px`,
-      fontWeight: 600,
+      fontWeight: 300,
       color,
-      fontFamily: fontFamily === 'mono' ? 'monospace' : 'inherit',
+      fontFamily: font === 'serif' ? 'var(--font-display)' : font === 'mono' ? 'monospace' : 'var(--font-body)',
+      fontVariantNumeric: font === 'serif' ? 'tabular-nums lining-nums' : undefined,
+      lineHeight: 1.05,
+      letterSpacing: font === 'mono' ? '0.02em' : undefined,
     }"
   >
     {{ formatted }}

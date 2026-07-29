@@ -49,7 +49,7 @@ const subtitleText = computed(() =>
     <p class="subtitle">
       {{ subtitleText }}
     </p>
-    <div class="time">{{ String(Math.floor(sittingSeconds / 60)).padStart(2, '0') }}:{{ String(sittingSeconds % 60).padStart(2, '0') }}</div>
+    <div class="time-serif">{{ String(Math.floor(sittingSeconds / 60)).padStart(2, '0') }}:{{ String(sittingSeconds % 60).padStart(2, '0') }}</div>
     <div class="hint">{{ zhCN.alert.sittingFor }}</div>
     <div class="actions">
       <PillButton variant="ghost-white" size="lg" @click="onSnooze">
@@ -64,15 +64,18 @@ const subtitleText = computed(() =>
 
 <style scoped>
 .alert {
-  background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
-  padding: 32px;
+  background:
+    radial-gradient(800px 400px at 50% -10%, #16a34a 0%, transparent 70%),
+    linear-gradient(180deg, #16a34a 0%, #14532d 100%);
+  padding: 48px 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   color: white;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-body);
+  gap: 8px;
 }
 
 .icon {
@@ -92,11 +95,13 @@ h1 {
   margin-bottom: 40px;
 }
 
-.time {
-  font-size: 60px;
-  font-weight: 600;
-  font-family: monospace;
-  margin-bottom: 8px;
+.time-serif {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-weight: 300;
+  font-size: 96px;
+  letter-spacing: 0.01em;
+  margin-bottom: 12px;
 }
 
 .hint {

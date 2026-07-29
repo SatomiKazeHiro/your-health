@@ -44,4 +44,13 @@ describe('CountdownText', () => {
     })
     expect(wrapper.find('time').attributes('style')).toContain('font-size: 48px')
   })
+
+  it('font="serif" 使用 serif 字体栈与 tabular-nums', () => {
+    const wrapper = mount(CountdownText, {
+      props: { seconds: 60, font: 'serif' },
+    })
+    const style = wrapper.find('time').attributes('style') ?? ''
+    expect(style).toContain('font-display')
+    expect(style).toContain('tabular-nums')
+  })
 })

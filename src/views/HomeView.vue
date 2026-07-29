@@ -43,34 +43,64 @@ function goSettings() {
 
 <template>
   <main class="home">
-    <!-- idle -->
+    <!-- IDLE 状态 -->
     <template v-if="store.state === 'idle'">
-      <div class="ring-wrap">
-        <ProgressRing :progress="0" :size="200" />
-        <div class="center">
-          <div class="not-started">{{ zhCN.idle.notStarted }}</div>
-          <div class="setting-info">
-            {{ settingDurationText }}
+      <div class="stage">
+        <div class="ring-shell">
+          <ProgressRing :progress="0" :size="200" :stroke-width="14" />
+          <!-- 12 个时钟刻度(静态,无动画) -->
+          <svg class="ticks" :width="200" :height="200" viewBox="0 0 200 200" aria-hidden="true">
+            <g v-for="i in 12" :key="i">
+              <circle
+                :cx="100 + 86 * Math.sin((i - 1) * 30 * Math.PI / 180)"
+                :cy="100 - 86 * Math.cos((i - 1) * 30 * Math.PI / 180)"
+                r="1.6"
+                fill="var(--color-primary)"
+                opacity="0.55"
+              />
+            </g>
+          </svg>
+          <div class="ring-center">
+            <div class="eyebrow">待机</div>
+            <div class="meta-big">{{ settingDurationText }}</div>
           </div>
         </div>
+        <div class="ground-line" />
       </div>
+
       <PillButton variant="primary" size="lg" @click="onStart">
         {{ zhCN.idle.start }}
       </PillButton>
+
       <button class="settings-link" @click="goSettings">{{ zhCN.idle.settings }}</button>
     </template>
 
-    <!-- running -->
+    <!-- RUNNING 状态 -->
     <template v-else-if="store.state === 'running'">
-      <div class="ring-wrap">
-        <ProgressRing :progress="store.progress" :size="200" />
-        <div class="center">
-          <CountdownText :seconds="store.remainingSeconds" />
-          <div class="hint">
-            {{ halfway ? zhCN.running.halfway : zhCN.running.remaining }}
+      <div class="stage">
+        <div class="ring-shell">
+          <ProgressRing :progress="store.progress" :size="200" :stroke-width="14" />
+          <svg class="ticks" :width="200" :height="200" viewBox="0 0 200 200" aria-hidden="true">
+            <g v-for="i in 12" :key="i">
+              <circle
+                :cx="100 + 86 * Math.sin((i - 1) * 30 * Math.PI / 180)"
+                :cy="100 - 86 * Math.cos((i - 1) * 30 * Math.PI / 180)"
+                r="1.6"
+                fill="var(--color-primary)"
+                opacity="0.55"
+              />
+            </g>
+          </svg>
+          <div class="ring-center">
+            <div class="countdown">
+              <CountdownText :seconds="store.remainingSeconds" font="serif" />
+            </div>
+            <div class="hint">{{ halfway ? zhCN.running.halfway : zhCN.running.remaining }}</div>
           </div>
         </div>
+        <div class="ground-line" />
       </div>
+
       <div class="actions">
         <PillButton variant="secondary" @click="onPause">
           {{ zhCN.running.pause }}
@@ -81,20 +111,32 @@ function goSettings() {
       </div>
     </template>
 
-    <!-- paused -->
+    <!-- PAUSED 状态 -->
     <template v-else-if="store.state === 'paused'">
-      <div class="ring-wrap">
-        <ProgressRing
-          :progress="store.progress"
-          :size="200"
-          :color="'#86efac'"
-          dashed
-        />
-        <div class="center">
-          <CountdownText :seconds="store.remainingSeconds" color="#15803d" />
-          <div class="hint">{{ zhCN.paused.paused }}</div>
+      <div class="stage">
+        <div class="ring-shell">
+          <ProgressRing :progress="store.progress" :size="200" :stroke-width="14" :color="'#86efac'" dashed />
+          <svg class="ticks paused" :width="200" :height="200" viewBox="0 0 200 200" aria-hidden="true">
+            <g v-for="i in 12" :key="i">
+              <circle
+                :cx="100 + 86 * Math.sin((i - 1) * 30 * Math.PI / 180)"
+                :cy="100 - 86 * Math.cos((i - 1) * 30 * Math.PI / 180)"
+                r="1.6"
+                fill="var(--color-primary)"
+                opacity="0.30"
+              />
+            </g>
+          </svg>
+          <div class="ring-center">
+            <div class="countdown serif-mono">
+              <CountdownText :seconds="store.remainingSeconds" font="serif" color="#15803d" />
+            </div>
+            <div class="hint">{{ zhCN.paused.paused }}</div>
+          </div>
         </div>
+        <div class="ground-line dashed" />
       </div>
+
       <div class="actions">
         <PillButton variant="primary" @click="onResume">
           {{ zhCN.paused.resume }}
@@ -116,41 +158,92 @@ function goSettings() {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 32px 24px;
-  gap: 24px;
+  padding: 48px 24px 32px;
+  gap: 28px;
 }
 
-.ring-wrap {
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.ring-shell {
   position: relative;
   width: 200px;
   height: 200px;
 }
 
-.center {
+.ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ticks.paused {
+  opacity: 0.6;
+}
+
+.ring-center {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 4px;
 }
 
-.not-started {
-  font-size: 18px;
-  color: var(--color-primary);
+.eyebrow {
+  font-size: var(--text-label);
   font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
 }
 
-.setting-info {
-  font-size: 13px;
+.meta-big {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 28px;
   color: var(--color-primary);
-  margin-top: 4px;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.meta-big span {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-subtle);
+  margin-left: 2px;
+  letter-spacing: 0.02em;
+}
+
+.countdown {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--color-primary-dark);
 }
 
 .hint {
-  font-size: 12px;
-  color: var(--color-text);
-  margin-top: 4px;
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  margin-top: 2px;
+}
+
+.ground-line {
+  width: 240px;
+  height: 1px;
+  background: var(--color-primary);
+  opacity: 0.30;
+}
+
+.ground-line.dashed {
+  background: none;
+  border-top: 1px dashed var(--color-primary);
+  opacity: 0.4;
 }
 
 .actions {
@@ -161,8 +254,19 @@ function goSettings() {
 .settings-link {
   background: transparent;
   border: none;
-  color: var(--color-primary);
+  color: var(--color-text-subtle);
   font-size: 14px;
+  letter-spacing: 0.04em;
   cursor: pointer;
+  padding: 8px 12px;
+  transition: color var(--t-fast) var(--ease);
+}
+.settings-link:hover {
+  color: var(--color-primary);
+}
+.settings-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
 }
 </style>
