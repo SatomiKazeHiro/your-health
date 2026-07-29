@@ -52,4 +52,22 @@ describe('PillButton', () => {
     await wrapper.trigger('click')
     expect(wrapper.emitted('click')).toBeFalsy()
   })
+
+  it('ghost-white variant 应用白色描边样式', () => {
+    const wrapper = mount(PillButton, {
+      props: { variant: 'ghost-white' },
+      slots: { default: 'X' },
+    })
+    expect(wrapper.element.style.color).toBe('white')
+    expect(wrapper.element.style.background).toBe('rgba(255, 255, 255, 0.1)')
+  })
+
+  it('solid-white variant 应用白色实心样式', () => {
+    const wrapper = mount(PillButton, {
+      props: { variant: 'solid-white' },
+      slots: { default: 'X' },
+    })
+    expect(wrapper.element.style.background).toBe('white')
+    expect(wrapper.element.style.color).toBe('rgb(21, 128, 61)') // #15803d
+  })
 })

@@ -3,7 +3,7 @@ import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    variant?: 'primary' | 'secondary' | 'ghost'
+    variant?: 'primary' | 'secondary' | 'ghost' | 'ghost-white' | 'solid-white'
     size?: 'sm' | 'md' | 'lg'
     disabled?: boolean
     type?: 'button' | 'submit'
@@ -45,6 +45,18 @@ const style = computed(() => {
       color: '#15803d',
       boxShadow: 'none',
     },
+    'ghost-white': {
+      border: '1px solid rgba(255,255,255,0.4)',
+      background: 'rgba(255,255,255,0.1)',
+      color: 'white',
+      boxShadow: 'none',
+    },
+    'solid-white': {
+      border: 'none',
+      background: 'white',
+      color: '#15803d',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+    },
   }
   return {
     ...sizes[props.size],
@@ -66,3 +78,10 @@ const style = computed(() => {
     <slot />
   </button>
 </template>
+
+<style scoped>
+button:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 2px;
+}
+</style>
