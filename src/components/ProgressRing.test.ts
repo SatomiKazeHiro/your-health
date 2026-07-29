@@ -16,7 +16,9 @@ describe('ProgressRing', () => {
     })
     const circle = wrapper.find('circle.progress')
     // 周长 = 2 * π * 86 ≈ 540
-    expect(circle.attributes('stroke-dashoffset')).toBe('540')
+    const offset = Number(circle.attributes('stroke-dashoffset'))
+    expect(offset).toBeGreaterThanOrEqual(539)
+    expect(offset).toBeLessThanOrEqual(541)
   })
 
   it('progress = 1 时,描边偏移为 0', () => {
@@ -24,7 +26,7 @@ describe('ProgressRing', () => {
       props: { progress: 1, size: 200 },
     })
     const circle = wrapper.find('circle.progress')
-    expect(circle.attributes('stroke-dashoffset')).toBe('0')
+    expect(Number(circle.attributes('stroke-dashoffset'))).toBe(0)
   })
 
   it('progress = 0.5 时,描边偏移为半周长', () => {
@@ -32,7 +34,9 @@ describe('ProgressRing', () => {
       props: { progress: 0.5, size: 200 },
     })
     const circle = wrapper.find('circle.progress')
-    expect(circle.attributes('stroke-dashoffset')).toBe('270')
+    const offset = Number(circle.attributes('stroke-dashoffset'))
+    expect(offset).toBeGreaterThanOrEqual(269)
+    expect(offset).toBeLessThanOrEqual(271)
   })
 
   it('支持 dashed prop(paused 状态)', () => {

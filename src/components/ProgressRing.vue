@@ -22,18 +22,24 @@ const props = withDefaults(
 const radius = computed(() => (props.size - props.strokeWidth) / 2 - 8)
 const circumference = computed(() => Math.round(2 * Math.PI * radius.value))
 const dashOffset = computed(() => circumference.value * (1 - props.progress))
+const viewBox = computed(() => `0 0 ${props.size} ${props.size}`)
 </script>
 
 <template>
   <svg
     :width="size"
     :height="size"
-    viewBox="0 0 200 200"
+    :viewBox="viewBox"
     :style="{ transform: 'rotate(-90deg)' }"
+    role="progressbar"
+    :aria-valuenow="Math.round(progress * 100)"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    :aria-label="`Progress: ${Math.round(progress * 100)}%`"
   >
     <circle
-      cx="100"
-      cy="100"
+      :cx="size / 2"
+      :cy="size / 2"
       :r="radius"
       fill="none"
       :stroke="bgColor"
@@ -41,8 +47,8 @@ const dashOffset = computed(() => circumference.value * (1 - props.progress))
     />
     <circle
       class="progress"
-      cx="100"
-      cy="100"
+      :cx="size / 2"
+      :cy="size / 2"
       :r="radius"
       fill="none"
       :stroke="color"
