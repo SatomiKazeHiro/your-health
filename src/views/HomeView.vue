@@ -39,69 +39,92 @@ function onEnd() {
 function goSettings() {
   router.push('/settings')
 }
+
+const tickX = (i: number) => 100 + 86 * Math.sin((i - 1) * 30 * Math.PI / 180)
+const tickY = (i: number) => 100 - 86 * Math.cos((i - 1) * 30 * Math.PI / 180)
 </script>
 
 <template>
-  <main class="home">
-    <!-- IDLE 状态 -->
+  <main class="min-h-screen flex flex-col items-center justify-center gap-7 px-6 py-12">
+    <!-- IDLE -->
     <template v-if="store.state === 'idle'">
-      <div class="stage">
-        <div class="ring-shell">
+      <div class="flex flex-col items-center gap-3.5">
+        <div class="relative w-[200px] h-[200px]">
           <ProgressRing :progress="0" :size="200" :stroke-width="14" />
-          <!-- 12 个时钟刻度(静态,无动画) -->
-          <svg class="ticks" :width="200" :height="200" viewBox="0 0 200 200" aria-hidden="true">
+          <svg
+            class="absolute inset-0 pointer-events-none"
+            :width="200"
+            :height="200"
+            viewBox="0 0 200 200"
+            aria-hidden="true"
+          >
             <g v-for="i in 12" :key="i">
               <circle
-                :cx="100 + 86 * Math.sin((i - 1) * 30 * Math.PI / 180)"
-                :cy="100 - 86 * Math.cos((i - 1) * 30 * Math.PI / 180)"
+                :cx="tickX(i)"
+                :cy="tickY(i)"
                 r="1.6"
                 fill="var(--color-primary)"
-                opacity="0.55"
+                fill-opacity="0.55"
               />
             </g>
           </svg>
-          <div class="ring-center">
-            <div class="eyebrow">待机</div>
-            <div class="meta-big">{{ settingDurationText }}</div>
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-1">
+            <div class="text-[11px] font-medium tracking-[0.08em] uppercase text-text-subtle">待机</div>
+            <div class="font-display font-light text-[28px] text-primary tabular-nums">
+              {{ settingDurationText }}
+            </div>
           </div>
         </div>
-        <div class="ground-line" />
+        <div class="w-60 h-px bg-primary opacity-30" />
       </div>
 
       <PillButton variant="primary" size="lg" @click="onStart">
         {{ zhCN.idle.start }}
       </PillButton>
 
-      <button class="settings-link" @click="goSettings">{{ zhCN.idle.settings }}</button>
+      <button
+        class="bg-transparent border-0 text-text-subtle text-sm tracking-[0.04em] px-3 py-2 cursor-pointer transition-colors duration-150 ease-[var(--ease-fresh)] hover:text-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 rounded-md"
+        @click="goSettings"
+      >
+        {{ zhCN.idle.settings }}
+      </button>
     </template>
 
-    <!-- RUNNING 状态 -->
+    <!-- RUNNING -->
     <template v-else-if="store.state === 'running'">
-      <div class="stage">
-        <div class="ring-shell">
+      <div class="flex flex-col items-center gap-3.5">
+        <div class="relative w-[200px] h-[200px]">
           <ProgressRing :progress="store.progress" :size="200" :stroke-width="14" />
-          <svg class="ticks" :width="200" :height="200" viewBox="0 0 200 200" aria-hidden="true">
+          <svg
+            class="absolute inset-0 pointer-events-none"
+            :width="200"
+            :height="200"
+            viewBox="0 0 200 200"
+            aria-hidden="true"
+          >
             <g v-for="i in 12" :key="i">
               <circle
-                :cx="100 + 86 * Math.sin((i - 1) * 30 * Math.PI / 180)"
-                :cy="100 - 86 * Math.cos((i - 1) * 30 * Math.PI / 180)"
+                :cx="tickX(i)"
+                :cy="tickY(i)"
                 r="1.6"
                 fill="var(--color-primary)"
-                opacity="0.55"
+                fill-opacity="0.55"
               />
             </g>
           </svg>
-          <div class="ring-center">
-            <div class="countdown">
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-1">
+            <div class="font-display font-light text-primary-dark">
               <CountdownText :seconds="store.remainingSeconds" font="serif" />
             </div>
-            <div class="hint">{{ halfway ? zhCN.running.halfway : zhCN.running.remaining }}</div>
+            <div class="text-[11px] tracking-[0.08em] uppercase text-text-subtle">
+              {{ halfway ? zhCN.running.halfway : zhCN.running.remaining }}
+            </div>
           </div>
         </div>
-        <div class="ground-line" />
+        <div class="w-60 h-px bg-primary opacity-30" />
       </div>
 
-      <div class="actions">
+      <div class="flex gap-3">
         <PillButton variant="secondary" @click="onPause">
           {{ zhCN.running.pause }}
         </PillButton>
@@ -111,33 +134,47 @@ function goSettings() {
       </div>
     </template>
 
-    <!-- PAUSED 状态 -->
+    <!-- PAUSED -->
     <template v-else-if="store.state === 'paused'">
-      <div class="stage">
-        <div class="ring-shell">
-          <ProgressRing :progress="store.progress" :size="200" :stroke-width="14" :color="'#86efac'" dashed />
-          <svg class="ticks paused" :width="200" :height="200" viewBox="0 0 200 200" aria-hidden="true">
+      <div class="flex flex-col items-center gap-3.5">
+        <div class="relative w-[200px] h-[200px]">
+          <ProgressRing
+            :progress="store.progress"
+            :size="200"
+            :stroke-width="14"
+            :color="'#86efac'"
+            dashed
+          />
+          <svg
+            class="absolute inset-0 pointer-events-none opacity-60"
+            :width="200"
+            :height="200"
+            viewBox="0 0 200 200"
+            aria-hidden="true"
+          >
             <g v-for="i in 12" :key="i">
               <circle
-                :cx="100 + 86 * Math.sin((i - 1) * 30 * Math.PI / 180)"
-                :cy="100 - 86 * Math.cos((i - 1) * 30 * Math.PI / 180)"
+                :cx="tickX(i)"
+                :cy="tickY(i)"
                 r="1.6"
                 fill="var(--color-primary)"
-                opacity="0.30"
+                fill-opacity="0.30"
               />
             </g>
           </svg>
-          <div class="ring-center">
-            <div class="countdown serif-mono">
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-1">
+            <div class="font-display font-light text-primary">
               <CountdownText :seconds="store.remainingSeconds" font="serif" color="#15803d" />
             </div>
-            <div class="hint">{{ zhCN.paused.paused }}</div>
+            <div class="text-[11px] tracking-[0.08em] uppercase text-text-subtle">
+              {{ zhCN.paused.paused }}
+            </div>
           </div>
         </div>
-        <div class="ground-line dashed" />
+        <div class="w-60 h-px border-t border-dashed border-primary opacity-40" />
       </div>
 
-      <div class="actions">
+      <div class="flex gap-3">
         <PillButton variant="primary" @click="onResume">
           {{ zhCN.paused.resume }}
         </PillButton>
@@ -146,127 +183,5 @@ function goSettings() {
         </PillButton>
       </div>
     </template>
-
-    <!-- alerting 不在此页处理 -->
   </main>
 </template>
-
-<style scoped>
-.home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 48px 24px 32px;
-  gap: 28px;
-}
-
-.stage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-
-.ring-shell {
-  position: relative;
-  width: 200px;
-  height: 200px;
-}
-
-.ticks {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.ticks.paused {
-  opacity: 0.6;
-}
-
-.ring-center {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-
-.eyebrow {
-  font-size: var(--text-label);
-  font-weight: 500;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--color-text-subtle);
-}
-
-.meta-big {
-  font-family: var(--font-display);
-  font-weight: 300;
-  font-size: 28px;
-  color: var(--color-primary);
-  font-variant-numeric: tabular-nums lining-nums;
-}
-
-.meta-big span {
-  font-family: var(--font-body);
-  font-size: 13px;
-  color: var(--color-text-subtle);
-  margin-left: 2px;
-  letter-spacing: 0.02em;
-}
-
-.countdown {
-  font-family: var(--font-display);
-  font-variant-numeric: tabular-nums lining-nums;
-  color: var(--color-primary-dark);
-}
-
-.hint {
-  font-size: var(--text-label);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--color-text-subtle);
-  margin-top: 2px;
-}
-
-.ground-line {
-  width: 240px;
-  height: 1px;
-  background: var(--color-primary);
-  opacity: 0.30;
-}
-
-.ground-line.dashed {
-  background: none;
-  border-top: 1px dashed var(--color-primary);
-  opacity: 0.4;
-}
-
-.actions {
-  display: flex;
-  gap: 12px;
-}
-
-.settings-link {
-  background: transparent;
-  border: none;
-  color: var(--color-text-subtle);
-  font-size: 14px;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  padding: 8px 12px;
-  transition: color var(--t-fast) var(--ease);
-}
-.settings-link:hover {
-  color: var(--color-primary);
-}
-.settings-link:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-  border-radius: var(--radius-md);
-}
-</style>

@@ -20,68 +20,29 @@ defineEmits<{
   click: [event: MouseEvent]
 }>()
 
-const style = computed(() => {
-  const sizes = {
-    sm: { padding: '8px 16px', fontSize: '14px' },
-    md: { padding: '12px 28px', fontSize: '15px' },
-    lg: { padding: '14px 36px', fontSize: '16px' },
-  }
-  const variants = {
-    primary: {
-      border: 'none',
-      background: '#16a34a',
-      color: 'white',
-      boxShadow: '0 2px 6px rgba(22,163,74,0.3)',
-    },
-    secondary: {
-      border: '1px solid rgba(22,163,74,0.2)',
-      background: 'white',
-      color: '#15803d',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-    },
-    ghost: {
-      border: 'none',
-      background: 'transparent',
-      color: '#15803d',
-      boxShadow: 'none',
-    },
-    'ghost-white': {
-      border: '1px solid rgba(255,255,255,0.4)',
-      background: 'rgba(255,255,255,0.1)',
-      color: 'white',
-      boxShadow: 'none',
-    },
-    'solid-white': {
-      border: 'none',
-      background: 'white',
-      color: '#15803d',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-    },
-  }
-  return {
-    ...sizes[props.size],
-    ...variants[props.variant],
-    borderRadius: '24px',
-    cursor: props.disabled ? 'not-allowed' : 'pointer',
-    opacity: props.disabled ? 0.5 : 1,
-  }
-})
+const sizeClass = computed(() => ({
+  sm: 'px-4 py-2 text-sm',
+  md: 'px-7 py-3 text-[15px]',
+  lg: 'px-9 py-3.5 text-base',
+}[props.size]))
+
+const variantClass = computed(() => ({
+  primary: 'bg-primary text-white border border-transparent shadow-primary',
+  secondary: 'bg-surface text-primary border border-primary/20 shadow-card',
+  ghost: 'bg-transparent text-primary border border-transparent',
+  'ghost-white': 'bg-white/10 text-white border border-white/40 backdrop-blur',
+  'solid-white': 'bg-surface text-primary-dark border border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.2)]',
+}[props.variant]))
 </script>
 
 <template>
   <button
     :type="type"
     :disabled="disabled"
-    :style="style"
+    class="rounded-pill font-medium transition-[transform,opacity,box-shadow] duration-150 ease-[var(--ease-fresh)] focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-px hover:shadow-primary"
+    :class="[sizeClass, variantClass]"
     @click="(e) => !disabled && $emit('click', e)"
   >
     <slot />
   </button>
 </template>
-
-<style scoped>
-button:focus-visible {
-  outline: 2px solid #16a34a;
-  outline-offset: 2px;
-}
-</style>

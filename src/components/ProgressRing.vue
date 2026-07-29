@@ -35,7 +35,8 @@ const viewBox = computed(() => `0 0 ${props.size} ${props.size}`)
     :aria-valuenow="Math.round(progress * 100)"
     aria-valuemin="0"
     aria-valuemax="100"
-    :aria-label="`Progress: ${Math.round(progress * 100)}%`"
+    :aria-label="`进度 ${Math.round(progress * 100)}%`"
+    class="block"
   >
     <circle
       :cx="size / 2"

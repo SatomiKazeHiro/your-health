@@ -22,8 +22,9 @@ describe('PillButton', () => {
       props: { variant: 'primary' },
       slots: { default: 'X' },
     })
-    expect(wrapper.element.style.borderRadius).toBe('24px')
-    expect(wrapper.element.style.background).toBeTruthy()
+    const cls = wrapper.classes().join(' ')
+    expect(cls).toContain('rounded-pill')
+    expect(cls).toContain('bg-primary')
   })
 
   it('secondary variant 应用描边样式', () => {
@@ -31,8 +32,9 @@ describe('PillButton', () => {
       props: { variant: 'secondary' },
       slots: { default: 'X' },
     })
-    expect(wrapper.element.style.borderRadius).toBe('24px')
-    expect(wrapper.element.style.background).toBeTruthy()
+    const cls = wrapper.classes().join(' ')
+    expect(cls).toContain('rounded-pill')
+    expect(cls).toContain('bg-surface')
   })
 
   it('点击触发 click 事件', async () => {
@@ -58,8 +60,9 @@ describe('PillButton', () => {
       props: { variant: 'ghost-white' },
       slots: { default: 'X' },
     })
-    expect(wrapper.element.style.color).toBe('white')
-    expect(wrapper.element.style.background).toBe('rgba(255, 255, 255, 0.1)')
+    const cls = wrapper.classes().join(' ')
+    expect(cls).toContain('text-white')
+    expect(cls).toContain('bg-white/10')
   })
 
   it('solid-white variant 应用白色实心样式', () => {
@@ -67,7 +70,8 @@ describe('PillButton', () => {
       props: { variant: 'solid-white' },
       slots: { default: 'X' },
     })
-    expect(wrapper.element.style.background).toBe('white')
-    expect(wrapper.element.style.color).toBe('rgb(21, 128, 61)') // #15803d
+    const cls = wrapper.classes().join(' ')
+    expect(cls).toContain('bg-surface')
+    expect(cls).toContain('text-primary-dark')
   })
 })

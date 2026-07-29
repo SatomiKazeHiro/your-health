@@ -49,8 +49,8 @@ describe('CountdownText', () => {
     const wrapper = mount(CountdownText, {
       props: { seconds: 60, font: 'serif' },
     })
-    const style = wrapper.find('time').attributes('style') ?? ''
-    expect(style).toContain('font-display')
-    expect(style).toContain('tabular-nums')
+    const cls = wrapper.find('time').classes().join(' ')
+    expect(cls).toContain('font-display')
+    expect(cls).toContain('tabular-nums')
   })
 })

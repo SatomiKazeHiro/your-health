@@ -15,6 +15,12 @@ const props = withDefaults(
   }
 )
 
+const fontClass = computed(() => ({
+  serif: 'font-display font-light tabular-nums lining-nums',
+  mono: 'font-mono',
+  sans: 'font-body',
+}[props.font]))
+
 const formatted = computed(() => {
   const m = Math.floor(props.seconds / 60)
   const s = props.seconds % 60
@@ -28,13 +34,10 @@ const formatted = computed(() => {
     :aria-label="`${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒`"
     :style="{
       fontSize: `${size}px`,
-      fontWeight: 300,
       color,
-      fontFamily: font === 'serif' ? 'var(--font-display)' : font === 'mono' ? 'monospace' : 'var(--font-body)',
-      fontVariantNumeric: font === 'serif' ? 'tabular-nums lining-nums' : undefined,
-      lineHeight: 1.05,
-      letterSpacing: font === 'mono' ? '0.02em' : undefined,
+      lineHeight: '1.05',
     }"
+    :class="fontClass"
   >
     {{ formatted }}
   </time>

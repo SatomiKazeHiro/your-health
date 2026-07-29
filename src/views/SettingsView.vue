@@ -73,36 +73,44 @@ const version = 'v0.1.0'
 </script>
 
 <template>
-  <div class="settings" v-if="loaded">
-    <header>
-      <span class="back" @click="goBack">{{ zhCN.settings.back }}</span>
-      <span class="title">{{ zhCN.settings.title }}</span>
+  <div class="max-w-[480px] mx-auto pb-8" v-if="loaded">
+    <header class="bg-surface px-5 py-4 border-b border-hairline flex items-center gap-3 sticky top-0 z-10">
+      <span class="text-primary text-lg cursor-pointer select-none" @click="goBack">{{ zhCN.settings.back }}</span>
+      <span class="text-primary-dark text-base font-medium">{{ zhCN.settings.title }}</span>
     </header>
 
-    <section class="eyebrow">{{ zhCN.settings.duration }}</section>
-    <div class="row">
+    <section class="text-[11px] font-medium tracking-[0.08em] uppercase text-text-subtle px-[22px] py-3.5 bg-transparent">{{ zhCN.settings.duration }}</section>
+    <div class="bg-surface px-5 py-4 flex justify-between items-center border-b border-hairline text-primary-dark">
       <span>{{ zhCN.settings.duration }}</span>
-      <select :value="duration" @change="onDurationChange">
+      <select
+        :value="duration"
+        @change="onDurationChange"
+        class="px-3 py-1.5 rounded-md border border-hairline text-primary bg-surface text-sm cursor-pointer"
+      >
         <option v-for="d in DURATION_OPTIONS" :key="d" :value="d">
           {{ d }} 分钟
         </option>
       </select>
     </div>
 
-    <section class="eyebrow">{{ zhCN.settings.sound }}</section>
-    <div class="row">
+    <section class="text-[11px] font-medium tracking-[0.08em] uppercase text-text-subtle px-[22px] py-3.5 bg-transparent">{{ zhCN.settings.sound }}</section>
+    <div class="bg-surface px-5 py-4 flex justify-between items-center border-b border-hairline text-primary-dark">
       <span>{{ zhCN.settings.sound }}</span>
-      <select :value="sound" @change="onSoundChange">
+      <select
+        :value="sound"
+        @change="onSoundChange"
+        class="px-3 py-1.5 rounded-md border border-hairline text-primary bg-surface text-sm cursor-pointer"
+      >
         <option v-for="s in SOUND_OPTIONS" :key="s.id" :value="s.id">
           {{ s.label }}
         </option>
       </select>
     </div>
 
-    <div class="row volume-row">
-      <div class="volume-header">
+    <div class="bg-surface px-5 py-4 flex flex-col items-stretch gap-3 border-b border-hairline text-primary-dark">
+      <div class="flex justify-between">
         <span>{{ zhCN.settings.volume }}</span>
-        <span class="volume-value">{{ Math.round(volume * 100) }}%</span>
+        <span class="text-primary">{{ Math.round(volume * 100) }}%</span>
       </div>
       <input
         type="range"
@@ -110,119 +118,17 @@ const version = 'v0.1.0'
         max="100"
         :value="Math.round(volume * 100)"
         @input="onVolumeChange"
+        class="w-full accent-[var(--color-primary)]"
       />
     </div>
 
-    <section class="eyebrow">{{ zhCN.settings.preview }}</section>
-    <div class="row center">
+    <section class="text-[11px] font-medium tracking-[0.08em] uppercase text-text-subtle px-[22px] py-3.5 bg-transparent">{{ zhCN.settings.preview }}</section>
+    <div class="bg-surface px-5 py-4 flex justify-center items-center border-b border-hairline text-primary-dark">
       <PillButton variant="primary" @click="previewSound">
         {{ zhCN.settings.playPreview }}
       </PillButton>
     </div>
 
-    <footer>{{ version }}</footer>
+    <footer class="px-5 py-5 text-center text-faint text-xs">{{ version }}</footer>
   </div>
 </template>
-
-<style scoped>
-.settings {
-  max-width: 480px;
-  margin: 0 auto;
-  padding-bottom: 32px;
-}
-
-header {
-  background: white;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--color-muted);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.back {
-  color: var(--color-primary);
-  font-size: 18px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.title {
-  color: var(--color-text-strong);
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.group-label {
-  padding: 8px 20px;
-  font-size: 12px;
-  color: var(--color-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background: rgba(240, 253, 244, 0.5);
-}
-
-.eyebrow {
-  padding: 14px 22px 6px;
-  font-size: var(--text-label);
-  font-weight: 500;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--color-text-subtle);
-  background: transparent;
-}
-
-.row {
-  background: white;
-  padding: 16px 22px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(240, 253, 244, 0.5);
-  color: var(--color-text-strong);
-}
-
-.row.center {
-  justify-content: center;
-}
-
-.volume-row {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 12px;
-}
-
-.volume-header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.volume-value {
-  color: var(--color-primary);
-}
-
-select {
-  padding: 6px 12px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-muted);
-  color: var(--color-primary);
-  background: white;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-input[type='range'] {
-  width: 100%;
-  accent-color: var(--color-primary);
-}
-
-footer {
-  padding: 20px;
-  text-align: center;
-  color: var(--color-faint);
-  font-size: 12px;
-}
-</style>
