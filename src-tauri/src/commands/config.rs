@@ -19,6 +19,33 @@ impl Default for AppConfig {
     }
 }
 
+const ALLOWED_DURATIONS: [u32; 4] = [30, 45, 60, 90];
+
+fn validate_duration(d: u32) -> u32 {
+    if ALLOWED_DURATIONS.contains(&d) {
+        d
+    } else {
+        45
+    }
+}
+
+fn validate_volume(v: f32) -> f32 {
+    if v.is_finite() && (0.0..=1.0).contains(&v) {
+        v
+    } else {
+        0.7
+    }
+}
+
+fn validate_sound_id(id: &str) -> String {
+    let trimmed = id.trim();
+    if trimmed.is_empty() {
+        "bell-1".to_string()
+    } else {
+        trimmed.to_string()
+    }
+}
+
 #[tauri::command]
 pub fn load_config(app: AppHandle) -> Result<AppConfig, String> {
     let store = app.store("config.json").map_err(|e| e.to_string())?;
@@ -37,24 +64,23 @@ pub fn load_config(app: AppHandle) -> Result<AppConfig, String> {
         .map(|v| v as f32)
         .unwrap_or(0.7);
 
-    let duration_minutes = match duration {
-        30 | 45 | 60 | 90 => duration,
-        _ => 45,
-    };
-
     Ok(AppConfig {
-        duration_minutes,
-        sound_id,
-        volume,
+        duration_minutes: validate_duration(duration),
+        sound_id: validate_sound_id(&sound_id),
+        volume: validate_volume(volume),
     })
 }
 
 #[tauri::command]
 pub fn save_config(app: AppHandle, config: AppConfig) -> Result<(), String> {
+    let duration_minutes = validate_duration(config.duration_minutes);
+    let sound_id = validate_sound_id(&config.sound_id);
+    let volume = validate_volume(config.volume);
+
     let store = app.store("config.json").map_err(|e| e.to_string())?;
-    store.set("durationMinutes", serde_json::json!(config.duration_minutes));
-    store.set("soundId", serde_json::json!(config.sound_id));
-    store.set("volume", serde_json::json!(config.volume));
+    store.set("durationMinutes", serde_json::json!(duration_minutes));
+    store.set("soundId", serde_json::json!(sound_id));
+    store.set("volume", serde_json::json!(volume));
     store.save().map_err(|e| e.to_string())?;
     Ok(())
 }
@@ -69,5 +95,36 @@ mod tests {
         assert_eq!(c.duration_minutes, 45);
         assert_eq!(c.sound_id, "bell-1");
         assert!((c.volume - 0.7).abs() < 0.001);
+    }
+
+    #[test]
+    fn duration_validation() {
+        assert_eq!(validate_duration(30), 30);
+        assert_eq!(validate_duration(45), 45);
+        assert_eq!(validate_duration(60), 60);
+        assert_eq!(validate_duration(90), 90);
+        assert_eq!(validate_duration(0), 45);
+        assert_eq!(validate_duration(15), 45);
+        assert_eq!(validate_duration(120), 45);
+    }
+
+    #[test]
+    fn volume_validation() {
+        assert!((validate_volume(0.0) - 0.0).abs() < 0.001);
+        assert!((validate_volume(0.5) - 0.5).abs() < 0.001);
+        assert!((validate_volume(1.0) - 1.0).abs() < 0.001);
+        assert!((validate_volume(-0.1) - 0.7).abs() < 0.001);
+        assert!((validate_volume(1.5) - 0.7).abs() < 0.001);
+        assert!((validate_volume(f32::NAN) - 0.7).abs() < 0.001);
+        assert!((validate_volume(f32::INFINITY) - 0.7).abs() < 0.001);
+    }
+
+    #[test]
+    fn sound_id_validation() {
+        assert_eq!(validate_sound_id("bell-1"), "bell-1");
+        assert_eq!(validate_sound_id("custom-sound"), "custom-sound");
+        assert_eq!(validate_sound_id(""), "bell-1");
+        assert_eq!(validate_sound_id("   "), "bell-1");
+        assert_eq!(validate_sound_id("  bell-2  "), "bell-2");
     }
 }
