@@ -21,9 +21,6 @@ class MockAudio {
 beforeEach(() => {
   mockAudioInstances.length = 0
   ;(globalThis as any).Audio = MockAudio
-  vi.mock('@tauri-apps/api/core', () => ({
-    convertFileSrc: (path: string) => `tauri://localhost/${path}`,
-  }))
 })
 
 describe('useAudio', () => {
@@ -31,7 +28,7 @@ describe('useAudio', () => {
     const { play } = useAudio()
     await play('bell-1', 0.5)
     expect(mockAudioInstances).toHaveLength(1)
-    expect(mockAudioInstances[0].src).toBe('tauri://localhost/assets/sounds/bell-1.wav')
+    expect(mockAudioInstances[0].src).toBe('/sounds/bell-1.wav')
     expect(mockAudioInstances[0].loop).toBe(true)
     expect(mockAudioInstances[0].volume).toBe(0.5)
     expect(mockAudioInstances[0].play).toHaveBeenCalled()
@@ -57,5 +54,16 @@ describe('useAudio', () => {
     await play('bell-2', 0.5)
     expect(first.pause).toHaveBeenCalled()
     expect(mockAudioInstances).toHaveLength(2)
+  })
+
+  it('play() 当 audio.play() 失败时不会向调用方抛出', async () => {
+    const origPlay = MockAudio.prototype.play
+    MockAudio.prototype.play = vi.fn().mockRejectedValue(new Error('autoplay blocked'))
+    try {
+      const { play } = useAudio()
+      await expect(play('bell-1', 0.5)).resolves.toBeUndefined()
+    } finally {
+      MockAudio.prototype.play = origPlay
+    }
   })
 })

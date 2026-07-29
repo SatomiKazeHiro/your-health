@@ -1,12 +1,12 @@
-import { ref } from 'vue'
-import { convertFileSrc } from '@tauri-apps/api/core'
+import { onScopeDispose, ref } from 'vue'
+import type { SoundId } from '@/types'
 
 export function useAudio() {
   const audioRef = ref<HTMLAudioElement | null>(null)
 
-  async function play(soundId: string, volume: number) {
+  async function play(soundId: SoundId, volume: number) {
     stop()
-    const url = convertFileSrc(`assets/sounds/${soundId}.wav`)
+    const url = `/sounds/${soundId}.wav`
     const audio = new Audio(url)
     audio.volume = volume
     audio.loop = true
@@ -24,6 +24,8 @@ export function useAudio() {
       audioRef.value = null
     }
   }
+
+  onScopeDispose(stop)
 
   return { play, stop }
 }
