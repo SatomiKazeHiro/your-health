@@ -46,4 +46,10 @@ describe('useConfig', () => {
       volume: 0.8,
     })
   })
+
+  it('save() 在底层失败时抛出错误', async () => {
+    vi.mocked(saveConfig).mockRejectedValue(new Error('disk full'))
+    const { save } = useConfig()
+    await expect(save(DEFAULT_CONFIG)).rejects.toThrow('disk full')
+  })
 })
