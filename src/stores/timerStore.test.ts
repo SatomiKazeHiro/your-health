@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { useTimerStore } from './timerStore'
 import { DEFAULT_CONFIG, SNOOZE_SECONDS } from '@/types'
@@ -32,14 +32,19 @@ describe('timerStore 状态机', () => {
   })
 
   it('resume() 从 paused 转到 running,remaining 不变', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-29T10:00:00Z'))
     const store = useTimerStore()
     store.applyConfig(DEFAULT_CONFIG)
     store.start()
-    store.tick(60) // 模拟 60 秒过去
+    vi.setSystemTime(new Date('2026-07-29T10:01:00Z'))
+    store.recompute()
     store.pause()
+    const paused = store.remainingSeconds
     store.resume()
     expect(store.state).toBe('running')
-    expect(store.remainingSeconds).toBe(45 * 60 - 60)
+    expect(store.remainingSeconds).toBe(paused)
+    vi.useRealTimers()
   })
 
   it('end() 从 running 转到 idle', () => {
@@ -60,49 +65,71 @@ describe('timerStore 状态机', () => {
     expect(store.state).toBe('idle')
   })
 
-  it('tick() 让 remaining 减少 1', () => {
+  it('start() 在 1 秒后 tick 应该让 remaining 减少 1', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-29T10:00:00Z'))
     const store = useTimerStore()
     store.applyConfig(DEFAULT_CONFIG)
     store.start()
-    const before = store.remainingSeconds
-    store.tick(1)
-    expect(store.remainingSeconds).toBe(before - 1)
+    expect(store.remainingSeconds).toBe(45 * 60)
+    vi.setSystemTime(new Date('2026-07-29T10:00:01Z'))
+    store.recompute()
+    expect(store.remainingSeconds).toBe(45 * 60 - 1)
+    vi.useRealTimers()
   })
 
-  it('tick(N) 让 remaining 减少 N', () => {
+  it('最小化 30 秒:recompute 应该按 wall clock 一次性补回', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-29T10:00:00Z'))
     const store = useTimerStore()
     store.applyConfig(DEFAULT_CONFIG)
     store.start()
-    store.tick(60)
-    expect(store.remainingSeconds).toBe(45 * 60 - 60)
+    const totalAtStart = store.remainingSeconds
+    // 模拟 30 秒内没有 tick
+    vi.setSystemTime(new Date('2026-07-29T10:00:30Z'))
+    store.recompute()
+    expect(store.remainingSeconds).toBe(totalAtStart - 30)
+    vi.useRealTimers()
   })
 
-  it('remaining = 0 时自动转入 alerting', () => {
+  it('倒计时归零时 recompute 应该自动转入 alerting', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-29T10:00:00Z'))
     const store = useTimerStore()
     store.applyConfig(DEFAULT_CONFIG)
     store.start()
-    store.tick(45 * 60) // 倒计时归零
+    vi.setSystemTime(new Date('2026-07-29T10:45:00Z'))
+    store.recompute()
     expect(store.state).toBe('alerting')
     expect(store.remainingSeconds).toBe(0)
+    vi.useRealTimers()
   })
 
   it('acknowledge() 从 alerting 转到 idle', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-29T10:00:00Z'))
     const store = useTimerStore()
     store.applyConfig(DEFAULT_CONFIG)
     store.start()
-    store.tick(45 * 60)
+    vi.setSystemTime(new Date('2026-07-29T10:45:00Z'))
+    store.recompute()
     store.acknowledge()
     expect(store.state).toBe('idle')
+    vi.useRealTimers()
   })
 
   it('snooze() 从 alerting 转到 running,remaining = 300', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-29T10:00:00Z'))
     const store = useTimerStore()
     store.applyConfig(DEFAULT_CONFIG)
     store.start()
-    store.tick(45 * 60)
+    vi.setSystemTime(new Date('2026-07-29T10:45:00Z'))
+    store.recompute()
     store.snooze()
     expect(store.state).toBe('running')
     expect(store.remainingSeconds).toBe(SNOOZE_SECONDS)
+    vi.useRealTimers()
   })
 
   it('idle 状态下 pause/resume/end/acknowledge/snooze 不生效', () => {

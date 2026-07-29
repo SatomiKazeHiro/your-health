@@ -4,22 +4,15 @@ import { useTimerStore } from '@/stores/timerStore'
 export function useTimer() {
   const store = useTimerStore()
   let intervalId: number | null = null
-  let lastTickAt = Date.now()
 
-  function doTick() {
-    const now = Date.now()
-    const elapsed = Math.floor((now - lastTickAt) / 1000)
-    if (elapsed > 0) {
-      store.tick(elapsed)
-      lastTickAt = now
-    }
+  function recompute() {
+    store.recompute()
   }
 
   function start() {
     if (intervalId !== null) return
     store.start()
-    lastTickAt = Date.now()
-    intervalId = window.setInterval(doTick, 1000)
+    intervalId = window.setInterval(recompute, 1000)
   }
 
   function pause() {
@@ -32,8 +25,7 @@ export function useTimer() {
   function resume() {
     if (intervalId !== null) return
     store.resume()
-    lastTickAt = Date.now()
-    intervalId = window.setInterval(doTick, 1000)
+    intervalId = window.setInterval(recompute, 1000)
   }
 
   function end() {
@@ -44,18 +36,22 @@ export function useTimer() {
     store.end()
   }
 
-  function onVisibilityChange() {
-    if (!document.hidden && intervalId !== null) {
-      doTick() // 补偿
+  function catchUp() {
+    if (intervalId !== null) {
+      recompute()
     }
   }
 
-  document.addEventListener('visibilitychange', onVisibilityChange)
+  document.addEventListener('visibilitychange', catchUp)
+  window.addEventListener('focus', catchUp)
+  window.addEventListener('blur', catchUp)
 
   // Only register cleanup if called inside a component setup
   if (getCurrentInstance()) {
     onUnmounted(() => {
-      document.removeEventListener('visibilitychange', onVisibilityChange)
+      document.removeEventListener('visibilitychange', catchUp)
+      window.removeEventListener('focus', catchUp)
+      window.removeEventListener('blur', catchUp)
       if (intervalId !== null) window.clearInterval(intervalId)
     })
   }

@@ -60,6 +60,34 @@ describe('useTimer 失焦补偿', () => {
     expect(store.remainingSeconds).toBe(before - 30)
   })
 
+  it('window focus 事件触发补偿', () => {
+    const store = useTimerStore()
+    store.applyConfig(DEFAULT_CONFIG)
+    const timer = useTimer()
+    timer.start()
+    vi.advanceTimersByTime(2000)
+    const before = store.remainingSeconds
+
+    vi.setSystemTime(Date.now() + 30000)
+    window.dispatchEvent(new Event('focus'))
+
+    expect(store.remainingSeconds).toBe(before - 30)
+  })
+
+  it('window blur 事件触发补偿', () => {
+    const store = useTimerStore()
+    store.applyConfig(DEFAULT_CONFIG)
+    const timer = useTimer()
+    timer.start()
+    vi.advanceTimersByTime(2000)
+    const before = store.remainingSeconds
+
+    vi.setSystemTime(Date.now() + 30000)
+    window.dispatchEvent(new Event('blur'))
+
+    expect(store.remainingSeconds).toBe(before - 30)
+  })
+
   it('end() 停止计时器', () => {
     const store = useTimerStore()
     store.applyConfig(DEFAULT_CONFIG)
