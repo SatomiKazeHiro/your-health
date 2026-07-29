@@ -20,6 +20,7 @@ impl Default for AppConfig {
 }
 
 const ALLOWED_DURATIONS: [u32; 4] = [30, 45, 60, 90];
+const ALLOWED_SOUND_IDS: &[&str] = &["bell-1", "bell-2", "bell-3", "bell-4", "bell-5"];
 
 fn validate_duration(d: u32) -> u32 {
     if ALLOWED_DURATIONS.contains(&d) {
@@ -39,10 +40,10 @@ fn validate_volume(v: f32) -> f32 {
 
 fn validate_sound_id(id: &str) -> String {
     let trimmed = id.trim();
-    if trimmed.is_empty() {
-        "bell-1".to_string()
-    } else {
+    if !trimmed.is_empty() && ALLOWED_SOUND_IDS.contains(&trimmed) {
         trimmed.to_string()
+    } else {
+        "bell-1".to_string()
     }
 }
 
@@ -121,10 +122,16 @@ mod tests {
 
     #[test]
     fn sound_id_validation() {
+        // existing valid cases
         assert_eq!(validate_sound_id("bell-1"), "bell-1");
-        assert_eq!(validate_sound_id("custom-sound"), "custom-sound");
+        assert_eq!(validate_sound_id("bell-5"), "bell-5");
+        // existing fallback cases (empty/whitespace)
         assert_eq!(validate_sound_id(""), "bell-1");
         assert_eq!(validate_sound_id("   "), "bell-1");
         assert_eq!(validate_sound_id("  bell-2  "), "bell-2");
+        // NEW: non-allowlist values fall back
+        assert_eq!(validate_sound_id("bell-99"), "bell-1");
+        assert_eq!(validate_sound_id("../etc/passwd"), "bell-1");
+        assert_eq!(validate_sound_id("custom"), "bell-1");
     }
 }
