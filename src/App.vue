@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <main>
-    <h1>Your Health</h1>
-  </main>
+  <RouterView />
 </template>
