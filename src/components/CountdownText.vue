@@ -23,7 +23,8 @@ const formatted = computed(() => {
 </script>
 
 <template>
-  <div
+  <time
+    :aria-label="`${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒`"
     :style="{
       fontSize: `${size}px`,
       fontWeight: 600,
@@ -32,5 +33,5 @@ const formatted = computed(() => {
     }"
   >
     {{ formatted }}
-  </div>
+  </time>
 </template>

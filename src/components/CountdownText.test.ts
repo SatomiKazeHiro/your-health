@@ -42,6 +42,6 @@ describe('CountdownText', () => {
     const wrapper = mount(CountdownText, {
       props: { seconds: 60, size: 48 },
     })
-    expect(wrapper.find('div').attributes('style')).toContain('font-size: 48px')
+    expect(wrapper.find('time').attributes('style')).toContain('font-size: 48px')
   })
 })
