@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useTimerStore } from '@/stores/timerStore'
 import { useAudio } from '@/composables/useAudio'
 import { useConfig } from '@/composables/useConfig'
@@ -36,6 +36,10 @@ async function onSnooze() {
   store.snooze()
   await closeAlertWindow()
 }
+
+const subtitleText = computed(() =>
+  zhCN.alert.subtitle.replace('{{minutes}}', String(Math.floor(sittingSeconds.value / 60)))
+)
 </script>
 
 <template>
@@ -43,7 +47,7 @@ async function onSnooze() {
     <div class="icon">🚶</div>
     <h1>{{ zhCN.alert.title }}</h1>
     <p class="subtitle">
-      {{ zhCN.alert.subtitle.replace('{{minutes}}', String(Math.floor(sittingSeconds / 60))) }}
+      {{ subtitleText }}
     </p>
     <div class="time">{{ String(Math.floor(sittingSeconds / 60)).padStart(2, '0') }}:{{ String(sittingSeconds % 60).padStart(2, '0') }}</div>
     <div class="hint">{{ zhCN.alert.sittingFor }}</div>

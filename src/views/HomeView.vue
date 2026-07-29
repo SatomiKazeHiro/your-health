@@ -16,6 +16,10 @@ useAlerting()
 
 const halfway = computed(() => store.progress >= 0.5)
 
+const settingDurationText = computed(() =>
+  zhCN.idle.settingDuration.replace('{{minutes}}', String(store.selectedDuration))
+)
+
 function onStart() {
   timer.start()
 }
@@ -46,7 +50,7 @@ function goSettings() {
         <div class="center">
           <div class="not-started">{{ zhCN.idle.notStarted }}</div>
           <div class="setting-info">
-            {{ zhCN.idle.settingDuration.replace('{{minutes}}', String(store.selectedDuration)) }}
+            {{ settingDurationText }}
           </div>
         </div>
       </div>
