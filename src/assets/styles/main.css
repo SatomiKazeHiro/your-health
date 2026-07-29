@@ -1,0 +1,26 @@
+@import './theme.css';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  color: var(--color-text-strong);
+}
+
+#app {
+  background: linear-gradient(
+    180deg,
+    var(--color-bg-gradient-start) 0%,
+    var(--color-bg-gradient-end) 100%
+  );
+  min-height: 100vh;
+}

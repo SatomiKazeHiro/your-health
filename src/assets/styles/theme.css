@@ -1,0 +1,25 @@
+:root {
+  /* 治愈绿主题(B 风格) */
+  --color-bg-gradient-start: #f0fdf4;
+  --color-bg-gradient-end: #dcfce7;
+
+  --color-primary: #16a34a;        /* green-600 */
+  --color-primary-hover: #15803d;  /* green-700 */
+  --color-primary-dark: #14532d;   /* green-900 */
+
+  --color-accent: #15803d;
+  --color-muted: #bbf7d0;          /* green-200 */
+  --color-faint: #86efac;          /* green-300 */
+
+  --color-text-strong: #14532d;
+  --color-text: #15803d;
+  --color-text-muted: #16a34a;
+
+  /* 圆角(D 风格胶囊) */
+  --radius-pill: 24px;
+  --radius-md: 8px;
+
+  /* 阴影 */
+  --shadow-primary: 0 2px 6px rgba(22, 163, 74, 0.3);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
