@@ -26,6 +26,18 @@ npm run build          # 前端构建
 npm run tauri build    # 打包桌面应用
 ```
 
+## E2E 测试
+
+需要先启动 Tauri 应用:
+
+```bash
+# Terminal 1
+npm run tauri dev
+
+# Terminal 2
+npm run test:e2e
+```
+
 ## 系统要求
 
 - Node.js 18+
