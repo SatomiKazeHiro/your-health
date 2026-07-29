@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "your-health",
+        "title": "Your Health",
         "width": 800,
         "height": 600
       }
