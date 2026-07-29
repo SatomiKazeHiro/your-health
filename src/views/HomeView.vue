@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTimerStore } from '@/stores/timerStore'
 import { useTimer } from '@/composables/useTimer'
+import { useAlerting } from '@/composables/useAlerting'
 import ProgressRing from '@/components/ProgressRing.vue'
 import CountdownText from '@/components/CountdownText.vue'
 import PillButton from '@/components/PillButton.vue'
@@ -11,6 +12,7 @@ import { zhCN } from '@/i18n/zh-CN'
 const router = useRouter()
 const store = useTimerStore()
 const timer = useTimer()
+useAlerting()
 
 const halfway = computed(() => store.progress >= 0.5)
 
