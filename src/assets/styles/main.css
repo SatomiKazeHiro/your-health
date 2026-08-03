@@ -5,14 +5,17 @@
   --color-primary: #15803d;
   --color-primary-hover: #166534;
   --color-primary-dark: #14532d;
-  --color-amber: #d97706;
-  --color-amber-soft: #fef3c7;
+  --color-amber: #c2410c;
+  --color-amber-soft: #ffedd5;
+  --color-red: #b91c1c;
+  --color-red-soft: #fee2e2;
+  --color-red-hover: #991b1b;
   --color-surface: #ffffff;
   --color-text: #15803d;
   --color-text-muted: #16a34a;
-  --color-text-subtle: #6b7f6e;
-  --color-hairline: #e5ebe0;
-  --color-muted: #bbf7d0;
+  --color-text-subtle: #6b7280;
+  --color-hairline: #e7e5e4;
+  --color-muted: #dcfce7;
   --color-faint: #86efac;
 
   /* fonts */
@@ -42,6 +45,25 @@ html, body, #app {
 #app {
   background:
     radial-gradient(1200px 600px at 50% -10%, #ffffff 0%, transparent 60%),
-    linear-gradient(180deg, #fafcf7 0%, #f1f5ed 100%);
+    linear-gradient(180deg, #fcfcfb 0%, #f5f5f4 100%);
   min-height: 100vh;
+}
+
+@keyframes progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-progress-fill {
+  animation: progress-fill 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-progress-fill {
+    animation: none;
+  }
 }

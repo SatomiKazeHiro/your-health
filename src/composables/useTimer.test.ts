@@ -88,6 +88,38 @@ describe('useTimer 失焦补偿', () => {
     expect(store.remainingSeconds).toBe(before - 30)
   })
 
+  it('计时结束后可以重新开始', () => {
+    const store = useTimerStore()
+    store.applyConfig({ ...DEFAULT_CONFIG, durationMinutes: 1 })
+    const timer = useTimer()
+    timer.start()
+
+    vi.advanceTimersByTime(60000)
+    expect(store.state).toBe('alerting')
+
+    store.acknowledge()
+    timer.start()
+    expect(store.state).toBe('running')
+  })
+
+  it('snooze() 后会从 5 分钟重新开始倒计时', async () => {
+    const store = useTimerStore()
+    store.applyConfig({ ...DEFAULT_CONFIG, durationMinutes: 1 })
+    const timer = useTimer()
+    timer.start()
+
+    vi.advanceTimersByTime(60000)
+    expect(store.state).toBe('alerting')
+
+    store.snooze()
+    expect(store.state).toBe('running')
+    expect(store.remainingSeconds).toBe(300)
+
+    await Promise.resolve()
+    vi.advanceTimersByTime(3000)
+    expect(store.remainingSeconds).toBe(297)
+  })
+
   it('end() 停止计时器', () => {
     const store = useTimerStore()
     store.applyConfig(DEFAULT_CONFIG)

@@ -73,62 +73,71 @@ const version = 'v0.1.0'
 </script>
 
 <template>
-  <div class="max-w-[480px] mx-auto pb-8" v-if="loaded">
-    <header class="bg-surface px-5 py-4 border-b border-hairline flex items-center gap-3 sticky top-0 z-10">
-      <span class="text-primary text-lg cursor-pointer select-none" @click="goBack">{{ zhCN.settings.back }}</span>
+  <main class="min-h-screen flex flex-col font-body" v-if="loaded">
+    <header class="px-5 py-3 flex items-center gap-3">
+      <button
+        class="bg-transparent border-0 text-primary text-lg cursor-pointer select-none px-2 py-1 rounded-md transition-colors duration-150 ease-[var(--ease-fresh)] hover:bg-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+        :aria-label="zhCN.settings.title"
+        @click="goBack"
+      >
+        {{ zhCN.settings.back }}
+      </button>
       <span class="text-primary-dark text-base font-medium">{{ zhCN.settings.title }}</span>
     </header>
 
-    <section class="text-[11px] font-medium tracking-[0.08em] uppercase text-text-subtle px-[22px] py-3.5 bg-transparent">{{ zhCN.settings.duration }}</section>
-    <div class="bg-surface px-5 py-4 flex justify-between items-center border-b border-hairline text-primary-dark">
-      <span>{{ zhCN.settings.duration }}</span>
-      <select
-        :value="duration"
-        @change="onDurationChange"
-        class="px-3 py-1.5 rounded-md border border-hairline text-primary bg-surface text-sm cursor-pointer"
-      >
-        <option v-for="d in DURATION_OPTIONS" :key="d" :value="d">
-          {{ d }} 分钟
-        </option>
-      </select>
-    </div>
+    <div class="w-full h-px bg-hairline" />
 
-    <section class="text-[11px] font-medium tracking-[0.08em] uppercase text-text-subtle px-[22px] py-3.5 bg-transparent">{{ zhCN.settings.sound }}</section>
-    <div class="bg-surface px-5 py-4 flex justify-between items-center border-b border-hairline text-primary-dark">
-      <span>{{ zhCN.settings.sound }}</span>
-      <select
-        :value="sound"
-        @change="onSoundChange"
-        class="px-3 py-1.5 rounded-md border border-hairline text-primary bg-surface text-sm cursor-pointer"
-      >
-        <option v-for="s in SOUND_OPTIONS" :key="s.id" :value="s.id">
-          {{ s.label }}
-        </option>
-      </select>
-    </div>
-
-    <div class="bg-surface px-5 py-4 flex flex-col items-stretch gap-3 border-b border-hairline text-primary-dark">
-      <div class="flex justify-between">
-        <span>{{ zhCN.settings.volume }}</span>
-        <span class="text-primary">{{ Math.round(volume * 100) }}%</span>
+    <div class="flex-1 flex flex-col justify-center max-w-[400px] mx-auto w-full px-5">
+      <div class="flex justify-between items-center py-3.5 border-b border-hairline text-primary-dark">
+        <span class="text-sm">{{ zhCN.settings.duration }}</span>
+        <select
+          :value="duration"
+          @change="onDurationChange"
+          class="px-3 py-1.5 rounded-md border border-hairline text-primary bg-surface text-sm cursor-pointer transition-colors duration-150 ease-[var(--ease-fresh)] hover:border-primary/40 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+        >
+          <option v-for="d in DURATION_OPTIONS" :key="d" :value="d">
+            {{ d }} 分钟
+          </option>
+        </select>
       </div>
-      <input
-        type="range"
-        min="0"
-        max="100"
-        :value="Math.round(volume * 100)"
-        @input="onVolumeChange"
-        class="w-full accent-[var(--color-primary)]"
-      />
+
+      <div class="flex justify-between items-center py-3.5 border-b border-hairline text-primary-dark">
+        <span class="text-sm">{{ zhCN.settings.sound }}</span>
+        <select
+          :value="sound"
+          @change="onSoundChange"
+          class="px-3 py-1.5 rounded-md border border-hairline text-primary bg-surface text-sm cursor-pointer transition-colors duration-150 ease-[var(--ease-fresh)] hover:border-primary/40 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+        >
+          <option v-for="s in SOUND_OPTIONS" :key="s.id" :value="s.id">
+            {{ s.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="flex flex-col gap-3 py-3.5 border-b border-hairline text-primary-dark">
+        <div class="flex justify-between items-center text-sm">
+          <span>{{ zhCN.settings.volume }}</span>
+          <span class="text-primary tabular-nums">{{ Math.round(volume * 100) }}%</span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          :value="Math.round(volume * 100)"
+          @input="onVolumeChange"
+          class="w-full accent-[var(--color-primary)] cursor-pointer"
+        />
+      </div>
+
+      <div class="flex justify-center py-4">
+        <PillButton variant="primary" size="md" @click="previewSound">
+          {{ zhCN.settings.playPreview }}
+        </PillButton>
+      </div>
     </div>
 
-    <section class="text-[11px] font-medium tracking-[0.08em] uppercase text-text-subtle px-[22px] py-3.5 bg-transparent">{{ zhCN.settings.preview }}</section>
-    <div class="bg-surface px-5 py-4 flex justify-center items-center border-b border-hairline text-primary-dark">
-      <PillButton variant="primary" @click="previewSound">
-        {{ zhCN.settings.playPreview }}
-      </PillButton>
-    </div>
-
-    <footer class="px-5 py-5 text-center text-faint text-xs">{{ version }}</footer>
-  </div>
+    <footer class="px-5 py-3 text-center text-faint text-[10px] tracking-[0.1em]">
+      {{ version }}
+    </footer>
+  </main>
 </template>

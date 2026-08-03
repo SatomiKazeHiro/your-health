@@ -74,4 +74,24 @@ describe('PillButton', () => {
     expect(cls).toContain('bg-surface')
     expect(cls).toContain('text-primary-dark')
   })
+
+  it('warning variant 应用琥珀色样式', () => {
+    const wrapper = mount(PillButton, {
+      props: { variant: 'warning' },
+      slots: { default: 'X' },
+    })
+    const cls = wrapper.classes().join(' ')
+    expect(cls).toContain('bg-amber-soft')
+    expect(cls).toContain('text-amber')
+  })
+
+  it('danger variant 应用红色样式', () => {
+    const wrapper = mount(PillButton, {
+      props: { variant: 'danger' },
+      slots: { default: 'X' },
+    })
+    const cls = wrapper.classes().join(' ')
+    expect(cls).toContain('bg-red-soft')
+    expect(cls).toContain('text-red')
+  })
 })

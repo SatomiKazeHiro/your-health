@@ -16,6 +16,7 @@ export const useTimerStore = defineStore('timer', () => {
   const endAt = ref(0)
   const selectedDuration = ref<DurationOption>(DEFAULT_CONFIG.durationMinutes)
   const selectedSound = ref<SoundId>(DEFAULT_CONFIG.soundId)
+  const volume = ref(DEFAULT_CONFIG.volume)
 
   const progress = computed(() => {
     if (totalSeconds.value === 0) return 0
@@ -25,6 +26,7 @@ export const useTimerStore = defineStore('timer', () => {
   function applyConfig(config: AppConfig) {
     selectedDuration.value = config.durationMinutes
     selectedSound.value = config.soundId
+    volume.value = config.volume
   }
 
   function start() {
@@ -64,10 +66,6 @@ export const useTimerStore = defineStore('timer', () => {
     }
   }
 
-  function tick(_elapsedSeconds: number) {
-    recompute()
-  }
-
   function acknowledge() {
     if (state.value !== 'alerting') return
     state.value = 'idle'
@@ -91,13 +89,13 @@ export const useTimerStore = defineStore('timer', () => {
     endAt: readonly(endAt),
     selectedDuration,
     selectedSound,
+    volume,
     progress,
     applyConfig,
     start,
     pause,
     resume,
     end,
-    tick,
     recompute,
     acknowledge,
     snooze,

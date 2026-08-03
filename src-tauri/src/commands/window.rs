@@ -1,15 +1,16 @@
 use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindowBuilder};
 
 #[tauri::command]
-pub async fn open_alert_window(app: AppHandle) -> Result<(), String> {
+pub async fn open_alert_window(app: AppHandle, url_path: String) -> Result<(), String> {
     if let Some(window) = app.get_webview_window("alert") {
         window.show().map_err(|e| e.to_string())?;
         window.set_focus().map_err(|e| e.to_string())?;
         return Ok(());
     }
-    WebviewWindowBuilder::new(&app, "alert", WebviewUrl::App("index.html#/alert".into()))
+    let url = format!("index.html#{}", url_path);
+    WebviewWindowBuilder::new(&app, "alert", WebviewUrl::App(url.into()))
         .title("")
-        .inner_size(600.0, 480.0)
+        .inner_size(480.0, 640.0)
         .decorations(false)
         .always_on_top(true)
         .resizable(false)

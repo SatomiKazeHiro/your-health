@@ -259,7 +259,7 @@ export const zhCN = {
   },
   alert: {
     title: '该起来活动啦!',
-    subtitle: '你已经坐了 {{minutes}} 分钟,起来走走吧',
+    subtitle: '你已经坐了 {{minutes}} 分钟，起来走走吧',
     sittingFor: '本次久坐时长',
     snooze: '延后 5 分钟',
     acknowledge: '我知道了',

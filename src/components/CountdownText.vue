@@ -36,6 +36,9 @@ const formatted = computed(() => {
       fontSize: `${size}px`,
       color,
       lineHeight: '1.05',
+      minWidth: `${size * 3.2}px`,
+      display: 'inline-block',
+      textAlign: 'center',
     }"
     :class="fontClass"
   >

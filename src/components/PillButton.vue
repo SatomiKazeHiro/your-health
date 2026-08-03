@@ -3,7 +3,7 @@ import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    variant?: 'primary' | 'secondary' | 'ghost' | 'ghost-white' | 'solid-white'
+    variant?: 'primary' | 'secondary' | 'ghost' | 'ghost-white' | 'solid-white' | 'warning' | 'danger'
     size?: 'sm' | 'md' | 'lg'
     disabled?: boolean
     type?: 'button' | 'submit'
@@ -27,11 +27,13 @@ const sizeClass = computed(() => ({
 }[props.size]))
 
 const variantClass = computed(() => ({
-  primary: 'bg-primary text-white border border-transparent shadow-primary',
-  secondary: 'bg-surface text-primary border border-primary/20 shadow-card',
-  ghost: 'bg-transparent text-primary border border-transparent',
-  'ghost-white': 'bg-white/10 text-white border border-white/40 backdrop-blur',
-  'solid-white': 'bg-surface text-primary-dark border border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.2)]',
+  primary: 'bg-primary text-white border border-transparent shadow-primary hover:bg-primary-hover',
+  secondary: 'bg-surface text-primary border border-primary/20 shadow-card hover:bg-muted hover:border-primary/40 hover:text-primary-dark',
+  ghost: 'bg-transparent text-primary border border-transparent hover:text-primary-dark',
+  'ghost-white': 'bg-white/10 text-white border border-white/40 backdrop-blur hover:bg-white/20',
+  'solid-white': 'bg-surface text-primary-dark border border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.2)] hover:bg-muted',
+  warning: 'bg-amber-soft text-amber border border-amber/40 hover:bg-amber hover:text-white hover:border-amber',
+  danger: 'bg-red-soft text-red border border-red/40 hover:bg-red hover:text-white hover:border-red',
 }[props.variant]))
 </script>
 

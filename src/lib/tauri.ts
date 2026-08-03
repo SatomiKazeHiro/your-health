@@ -1,6 +1,5 @@
 import { invoke } from '@tauri-apps/api/core'
-import type { AppConfig, DurationOption, SoundId } from '@/types'
-import { DURATION_OPTIONS, SOUND_OPTIONS } from '@/types'
+import type { AppConfig, SoundId, DurationOption } from '@/types'
 
 interface RustAppConfig {
   duration_minutes: number
@@ -8,16 +7,11 @@ interface RustAppConfig {
   volume: number
 }
 
-const SOUND_IDS: readonly string[] = SOUND_OPTIONS.map(s => s.id)
-const DURATION_SET = new Set<number>(DURATION_OPTIONS)
+interface AlertWindowParams {
+  urlPath: string
+}
 
 function toAppConfig(rust: RustAppConfig): AppConfig {
-  if (!DURATION_SET.has(rust.duration_minutes)) {
-    throw new Error(`invalid duration: ${rust.duration_minutes}`)
-  }
-  if (!SOUND_IDS.includes(rust.sound_id)) {
-    throw new Error(`invalid sound: ${rust.sound_id}`)
-  }
   return {
     durationMinutes: rust.duration_minutes as DurationOption,
     soundId: rust.sound_id as SoundId,
@@ -40,8 +34,8 @@ export async function saveConfig(config: AppConfig): Promise<void> {
   })
 }
 
-export async function openAlertWindow(): Promise<void> {
-  await invoke('open_alert_window')
+export async function openAlertWindow(urlPath: string): Promise<void> {
+  await invoke<unknown>('open_alert_window', { urlPath } satisfies AlertWindowParams)
 }
 
 export async function closeAlertWindow(): Promise<void> {

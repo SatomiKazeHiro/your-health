@@ -2,7 +2,7 @@
 export type TimerState = 'idle' | 'running' | 'paused' | 'alerting'
 
 // 时长选项
-export const DURATION_OPTIONS = [30, 45, 60, 90] as const
+export const DURATION_OPTIONS = [1, 30, 45, 60, 90] as const
 export type DurationOption = (typeof DURATION_OPTIONS)[number]
 
 // 铃声选项

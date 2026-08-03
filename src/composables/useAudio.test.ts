@@ -66,4 +66,27 @@ describe('useAudio', () => {
       MockAudio.prototype.play = origPlay
     }
   })
+
+  it('stop(fadeMs) 渐弱后 pause', async () => {
+    const { play, stop } = useAudio()
+    await play('bell-1', 1)
+    const audio = mockAudioInstances[0]
+    await stop(60)
+    expect(audio.pause).toHaveBeenCalled()
+    expect(audio.volume).toBeCloseTo(0, 5)
+  })
+
+  it('play() 会等待上一次 stop(fadeMs) 完成', async () => {
+    const { play, stop } = useAudio()
+    await play('bell-1', 0.5)
+    const fading = stop(60) // 不 await
+    // 立即 play,应被串行化等 fade 完成才 pause 旧的
+    const playPromise = play('bell-2', 0.5)
+    // 此时第一次的 audio 还没 pause
+    expect(mockAudioInstances[0].pause).not.toHaveBeenCalled()
+    await fading
+    await playPromise
+    expect(mockAudioInstances[0].pause).toHaveBeenCalled()
+    expect(mockAudioInstances).toHaveLength(2)
+  })
 })
