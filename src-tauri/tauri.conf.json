@@ -12,9 +12,12 @@
   "app": {
     "windows": [
       {
-        "title": "Your Health",
-        "width": 800,
-        "height": 600
+        "title": "关注你的健康",
+        "width": 400,
+        "height": 520,
+        "resizable": false,
+        "maximizable": false,
+        "center": true
       }
     ],
     "security": {
