@@ -14,6 +14,13 @@ export default defineConfig(async () => ({
   //
   // 1. prevent Vite from obscuring rust errors
   clearScreen: false,
+  // Tauri 2 桌面端运行时是 WebView2 / WKWebView / webkit2gtk,
+  // 都是现代引擎,支持顶层 await 和 ES2022+ 语法。
+  // 默认的 modules 目标(Chrome87/Safari14)对此过于保守,
+  // 会拒绝 main.ts 中用于预加载持久化配置的顶层 await。
+  build: {
+    target: "esnext",
+  },
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
