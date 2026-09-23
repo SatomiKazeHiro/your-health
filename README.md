@@ -1,6 +1,19 @@
 # Your Health — 久坐提醒
 
-一个基于 Tauri 2.x + Vue 3 + TypeScript 的桌面健康软件 MVP,核心功能是**久坐闹钟提醒**。
+一个基于 Tauri 2.x + Vue 3 + TypeScript 的桌面健康软件 MVP，久坐闹钟提醒。
+
+<table>
+  <tr>
+    <td align="center"><b>首页</b></td>
+    <td align="center"><b>到时提醒</b></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/首页.png" alt="首页" /></td>
+    <td><img src="docs/screenshots/到时提醒.png" alt="到时提醒" /></td>
+  </tr>
+</table>
+
+
 
 ## 功能
 
